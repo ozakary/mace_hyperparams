@@ -92,7 +92,7 @@ mkdir mlip_data_xe-water
 cd mlip_data_xe-water
 
 # Go to your local machine terminal, locate the `mlip_data_xe-water.xyz` file and then upload it to Puhti using:
-scp mlip_data_xe-water_0-5ps_sampled-20.xyz <user_nqme>@puhti.csc.fi:./scratch/plantto/<user_name>/mace_calcs/hyperparams_tests/cutoff_redius_tests/mlip_data_xe-water/
+scp mlip_data_xe-water_0-5ps_sampled-20.xyz <user_nqme>@puhti.csc.fi:/scratch/plantto/<user_name>/mace_calcs/hyperparams_tests/cutoff_redius_tests/mlip_data_xe-water/
 ```
 
 2. Now back to the supercomputer terminal, split the dataset into training, validation, and testing sets:
