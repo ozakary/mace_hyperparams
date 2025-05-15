@@ -19,9 +19,8 @@ This repository contains the methodology and tools for optimizing a MACE (Equiva
 5. [Testing Workflow](#testing-workflow)
 6. [Evaluation Metrics](#evaluation-metrics)
 7. [Recommended Parameter Combinations](#recommended-parameter-combinations)
-8. [Advanced Techniques](#advanced-techniques)
-9. [Results Visualization](#results-visualization)
-10. [References](#references)
+8. [Results Visualization](#results-visualization)
+9. [References](#references)
 
 ## Overview
 
@@ -52,9 +51,9 @@ module load pytorch/2.2
 
 3. Create and activate a virtual environment in the ./projappl/plantto/<user_name>/ directory (if you run out of quota, use the ./scratch/plantto/<user_name>/ directory):
 ```bash
-cd ./projappl/plantto/<user_name>/
+cd ./projappl/plantto/<user_name>/packages/
 # or
-cd ./scratch/plantto/<user_name>/
+cd ./scratch/plantto/<user_name>/packages/
 python3 -m venv mace_env
 source mace_env/bin/activate
 ```
@@ -64,6 +63,9 @@ source mace_env/bin/activate
 pip install --upgrade pip
 pip install mace-torch
 pip install wandb
+
+# get the MACE repository for the running scripts
+git clone https://github.com/ACEsuit/mace.git
 ```
 
 5. Set up Weights & Biases for tracking experiments:
@@ -76,25 +78,35 @@ Follow the instructions to complete the login process.
 
 Create the necessary directory structure:
 ```bash
-mkdir -p hyperparameters_test/MLP-0_data
-cd hyperparameters_test
+cd ..
+mkdir -p mace_calcs/hyperparams_tests/cutoff_redius_tests/
+cd mace_calcs/hyperparams_tests/cutoff_redius_tests/
 ```
 
 ## Dataset Preparation
 
-1. Upload your AIMD trajectory to the `MLP-0_data` directory.
+1. Upload your AIMD trajectory to the `mlip_data_xe-water/` directory.
 
-2. Split the dataset into training, validation, and testing sets:
 ```bash
-cd MLP-0_data
-python ../code.py  # Dataset splitting script
+mkdir mlip_data_xe-water
+cd mlip_data_xe-water
+
+# Go to your local machine terminal, locate the `mlip_data_xe-water.xyz` file and then upload it to Puhti using:
+scp mlip_data_xe-water.xyz <user_nqme>@puhti.csc.fi:./scratch/plantto/<user_name>/mace_calcs/hyperparams_tests/cutoff_redius_tests/mlip_data_xe-water/
+```
+
+2. Now back to the supercomputer terminal, split the dataset into training, validation, and testing sets:
+```bash
+# Load the data analysis python module
+module load python-data
+python3 code_split.py  # Dataset splitting script
 cd ..
 ```
 
 3. The splitting script should create:
-   - `MLP-0_train.xyz` (typically 80% of data)
-   - `MLP-0_valid.xyz` (typically 10% of data)
-   - `MLP-0_test.xyz` (typically 10% of data)
+   - `mlip_data_xe-water_train.xyz` (typically 80% of data)
+   - `mlip_data_xe-water_valid.xyz` (typically 10% of data)
+   - `mlip_data_xe-water_test.xyz` (typically 10% of data)
 
 ## Hyperparameter Testing Strategy
 
@@ -152,9 +164,9 @@ Create a separate job script for each hyperparameter combination you want to tes
 
 Example for testing different cutoff radii:
 ```bash
-vi MLIP_test-r_max-4.0.job
-vi MLIP_test-r_max-5.0.job
-vi MLIP_test-r_max-6.0.job
+vi mlip_xe-water_test-r_max-4.job
+vi mlip_xe-water_test-r_max-5.job
+vi mlip_xe-water_test-r_max-6.job
 ```
 
 ### Step 2: Initial Testing on gputest
@@ -162,7 +174,7 @@ vi MLIP_test-r_max-6.0.job
 Always start with a short run on the `gputest` partition to ensure your job works correctly:
 
 ```bash
-sbatch MLIP_test-r_max-4.0.job
+sbatch mlip_xe-water_test-r_max-4.job
 ```
 
 Review the output and error files to ensure everything is working properly.
@@ -173,11 +185,11 @@ Submit jobs to the `gpu` partition for full training runs:
 
 ```bash
 # Modify the job script to use the gpu partition and longer time limit
-sed -i 's/gputest/gpu/g' MLIP_test-r_max-4.0.job
-sed -i 's/0-00:15:00/0-12:00:00/g' MLIP_test-r_max-4.0.job
+sed -i 's/gputest/gpu/g' mlip_xe-water_test-r_max-4.job
+sed -i 's/0-00:15:00/0-12:00:00/g' mlip_xe-water_test-r_max-4.job
 
 # Submit the job
-sbatch MLIP_test-r_max-4.0.job
+sbatch mlip_xe-water_test-r_max-4.job
 ```
 
 ### Step 4: Track and Analyze Results
