@@ -4,7 +4,7 @@ import random
 random.seed(42)
 
 # Open the original file
-with open('MLP-0.xyz', 'r') as f:
+with open('mlip_data_xe-water.xyz', 'r') as f:
     lines = f.readlines()
 
 # Find the indices of the lines starting with 'Lattice'
@@ -44,13 +44,13 @@ valid_blocks = extract_blocks(valid_indices)
 test_blocks = extract_blocks(test_indices)
 
 # Write the parts to separate files
-with open('MLP-0_train.xyz', 'w') as f:
+with open('mlip_data_xe-water_train.xyz', 'w') as f:
     f.writelines(train_blocks)
 
-with open('MLP-0_valid.xyz', 'w') as f:
+with open('mlip_data_xe-water_valid.xyz', 'w') as f:
     f.writelines(valid_blocks)
 
-with open('MLP-0_test.xyz', 'w') as f:
+with open('mlip_data_xe-water_test.xyz', 'w') as f:
     f.writelines(test_blocks)
 
 # Print statistics
