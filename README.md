@@ -255,3 +255,7 @@ plt.savefig('energy_prediction.png', dpi=300)
 2. Batzner, S., Musaelian, A., Sun, L. et al. (2022). E(3)-equivariant graph neural networks for data-efficient and accurate interatomic potentials. *Nature Communications*, 13, 2453. [https://doi.org/10.1038/s41467-022-29939-5](https://doi.org/10.1038/s41467-022-29939-5)
 
 3. Drautz, R. (2019). Atomic cluster expansion for accurate and transferable interatomic potentials. *Physical Review B*, 99, 014104. [https://doi.org/10.1103/PhysRevB.99.014104](https://doi.org/10.1103/PhysRevB.99.014104)
+
+---
+
+For further details, please refer to the respective folders or contact the author via the provided email.
