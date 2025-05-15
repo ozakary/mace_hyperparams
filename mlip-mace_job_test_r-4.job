@@ -1,12 +1,12 @@
 #!/bin/bash
 
-#SBATCH --job-name=MLAMD
-#SBATCH --partition=gpu
+#SBATCH --job-name=mlip_tests
+#SBATCH --partition=gputest
 #SBATCH --account=plantto # !!it is mandatory to specify the account (project) as precised in the CSC rules!!
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=40
 #SBATCH --mem-per-cpu=8GB
-#SBATCH --time=0-06:00:00
+#SBATCH --time=0-00:15:00
 #SBATCH --gres=gpu:v100:1
 #SBATCH --output=mlp-r4-output_%j.txt
 #SBATCH --error=mlp-r4-errors_%j.txt
@@ -40,10 +40,10 @@ cd /scratch/plantto/<user_name>/mace_calcs/hyperparams_tests/cutoff_redius_tests
 mkdir processed_data-r4
 
 python /scratch/plantto/<user_name>/packages/mace/scripts/preprocess_data.py \
-    --train_file="./MLP-0_data/mlip_data_xe-water_train.xyz" \
-    --valid_file="./MLP-0_data/mlip_data_xe-water_valid.xyz" \
+    --train_file="./mlip_data_xe-water/mlip_data_xe-water_train.xyz" \
+    --valid_file="./mlip_data_xe-water/mlip_data_xe-water_valid.xyz" \
     --valid_fraction=1 \
-    --test_file="./MLP-0_data/mlip_data_xe-water_test.xyz" \
+    --test_file="./mlip_data_xe-water/mlip_data_xe-water_test.xyz" \
     --r_max=4.0 \
     --h5_prefix="processed_data-r4/" \
     --compute_statistics \
@@ -124,7 +124,7 @@ if [ -z "$model_file" ]; then
 fi
 
 python /scratch/plantto/<user_name>/packages/mace/scripts/eval_configs.py \
-    --configs="./MLP-0_data/mlip_data_xe-water_test.xyz" \
+    --configs="./mlip_data_xe-water/mlip_data_xe-water_test.xyz" \
     --model="$model_file" \
     --output="./test-r4/mlip_data_xe-water_test_output.xyz" \
 
