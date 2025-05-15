@@ -40,10 +40,10 @@ cd /scratch/plantto/<user_name>/mace_calcs/hyperparams_tests/cutoff_redius_tests
 mkdir processed_data-r4
 
 python /scratch/plantto/<user_name>/packages/mace/scripts/preprocess_data.py \
-    --train_file="./MLP-0_data/MLP-0_train.xyz" \
-    --valid_file="./MLP-0_data/MLP-0_valid.xyz" \
+    --train_file="./MLP-0_data/mlip_data_xe-water_train.xyz" \
+    --valid_file="./MLP-0_data/mlip_data_xe-water_valid.xyz" \
     --valid_fraction=1 \
-    --test_file="./MLP-0_data/MLP-0_test.xyz" \
+    --test_file="./MLP-0_data/mlip_data_xe-water_test.xyz" \
     --r_max=4.0 \
     --h5_prefix="processed_data-r4/" \
     --compute_statistics \
@@ -55,7 +55,7 @@ python /scratch/plantto/<user_name>/packages/mace/scripts/preprocess_data.py \
 
 # Start of training the MACE architecture :
 
-python /projappl/plantto/zakaryou/MLAMD/packages/mace/scripts/run_train.py \
+python /scratch/plantto/<user_name>/packages/mace/scripts/run_train.py \
     --train_file="./processed_data-r4/train/train_0.h5" \
     --valid_file="./processed_data-r4/val/val_0.h5" \
     --test_file="./processed_data-r4/test/default_0.h5" \
@@ -123,10 +123,10 @@ if [ -z "$model_file" ]; then
   exit 1
 fi
 
-python /projappl/plantto/zakaryou/MLAMD/packages/mace/scripts/eval_configs.py \
-    --configs="./MLP-0_data/MLP-0_test.xyz" \
+python /scratch/plantto/<user_name>/packages/mace/scripts/eval_configs.py \
+    --configs="./MLP-0_data/mlip_data_xe-water_test.xyz" \
     --model="$model_file" \
-    --output="./test-r4/MLP-0_test_output.xyz" \
+    --output="./test-r4/mlip_data_xe-water_test_output.xyz" \
 
 # Record end time
 end_time=$(date +"%Y-%m-%d %H:%M:%S")
