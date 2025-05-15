@@ -4,7 +4,7 @@ import random
 random.seed(42)
 
 # Open the original file
-with open('mlip_data_xe-water.xyz', 'r') as f:
+with open('mlip_data_xe-water_0-5ps_sampled-20.xyz', 'r') as f:
     lines = f.readlines()
 
 # Find the indices of the lines starting with 'Lattice'
