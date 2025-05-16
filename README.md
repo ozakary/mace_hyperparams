@@ -9,7 +9,7 @@
 
 ---
 
-This repository contains the methodology and tools for optimizing a MACE (Equivariant Message Passing Neural Network) architecture for Xenon-water systems.
+This repository contains the methodology and tools for optimizing the hyperparameters of a MACE (Equivariant Message Passing Neural Network) architecture for Xenon-water systems.
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -39,14 +39,18 @@ The workflow consists of:
 
 ### Installation
 
-1. Connect to Puhti or Mahti:
+1. Connect to Puhti (it has V100 GPUs, which is slower than A100 GPUs in Mahti) or Mahti:
 ```bash
 ssh your-username@puhti.csc.fi
+
+# or
+
+ssh your-username@mahti.csc.fi
 ```
 
 2. Load the required modules:
 ```bash
-module load pytorch/2.2
+module load pytorch/2.0
 ```
 
 3. Create and activate a virtual environment in the ./projappl/plantto/<user_name>/ directory (if you run out of quota, use the ./scratch/plantto/<user_name>/ directory):
@@ -54,6 +58,8 @@ module load pytorch/2.2
 cd ./projappl/plantto/<user_name>/packages/
 # or
 cd ./scratch/plantto/<user_name>/packages/
+
+# Create and activate a python virtual environment where all packages will be installed
 python3 -m venv mace_env
 source mace_env/bin/activate
 ```
@@ -85,28 +91,26 @@ cd mace_calcs/hyperparams_tests/cutoff_redius_tests/
 
 ## Dataset Preparation
 
-1. Upload your AIMD trajectory to the `mlip_data_xe-water/` directory.
+1. Upload your AIMD trajectory to the `water_xe_dataset/` directory.
 
 ```bash
-mkdir mlip_data_xe-water
-cd mlip_data_xe-water
+mkdir water_xe_dataset
+cd water_xe_dataset
 
-# Go to your local machine terminal, locate the `mlip_data_xe-water.xyz` file and then upload it to Puhti using:
-scp mlip_data_xe-water_0-5ps_sampled-20.xyz <user_nqme>@puhti.csc.fi:/scratch/plantto/<user_name>/mace_calcs/hyperparams_tests/cutoff_redius_tests/mlip_data_xe-water/
+# Go to your local machine terminal, locate the `mlip_data_xe-water_0-5ps_sampled-20.xyz` file, and then upload it to Puhti using:
+scp mlip_data_xe-water_0-5ps_sampled-20.xyz <user_nqme>@puhti.csc.fi:/scratch/plantto/<user_name>/mace_calcs/hyperparams_tests/cutoff_redius_tests/water_xe_dataset/
 ```
 
 2. Now back to the supercomputer terminal, split the dataset into training, validation, and testing sets:
 ```bash
-# Load the data analysis python module
-module load python-data
 python3 code_split.py  # Dataset splitting script
 cd ..
 ```
 
 3. The splitting script should create:
-   - `mlip_data_xe-water_train.xyz` (typically 80% of data)
-   - `mlip_data_xe-water_valid.xyz` (typically 10% of data)
-   - `mlip_data_xe-water_test.xyz` (typically 10% of data)
+   - `water_xe_dataset_train.xyz` (typically 80% of data)
+   - `water_xe_dataset_valid.xyz` (typically 10% of data)
+   - `water_xe_dataset_test.xyz` (typically 10% of data)
 
 ## Hyperparameter Testing Strategy
 
@@ -164,9 +168,9 @@ Create a separate job script for each hyperparameter combination you want to tes
 
 Example for testing different cutoff radii:
 ```bash
-vi mlip_xe-water_test-r_max-4.job
-vi mlip_xe-water_test-r_max-5.job
-vi mlip_xe-water_test-r_max-6.job
+vi script_mace_test-r_max-4.job
+vi script_mace_test-r_max-5.job
+vi script_mace_test-r_max-6.job
 ```
 
 ### Step 2: Initial Testing on gputest
@@ -174,7 +178,7 @@ vi mlip_xe-water_test-r_max-6.job
 Always start with a short run on the `gputest` partition to ensure your job works correctly:
 
 ```bash
-sbatch mlip_xe-water_test-r_max-4.job
+sbatch script_mace_test-r_max-4.job
 ```
 
 Review the output and error files to ensure everything is working properly.
@@ -185,11 +189,11 @@ Submit jobs to the `gpu` partition for full training runs:
 
 ```bash
 # Modify the job script to use the gpu partition and longer time limit
-sed -i 's/gputest/gpu/g' mlip_xe-water_test-r_max-4.job
-sed -i 's/0-00:15:00/0-12:00:00/g' mlip_xe-water_test-r_max-4.job
+sed -i 's/gputest/gpu/g' script_mace_test-r_max-4.job
+sed -i 's/0-00:15:00/0-36:00:00/g' script_mace_test-r_max-4.job
 
 # Submit the job
-sbatch mlip_xe-water_test-r_max-4.job
+sbatch script_mace_test-r_max-4.job
 ```
 
 ### Step 4: Track and Analyze Results
