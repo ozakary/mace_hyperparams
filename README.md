@@ -61,11 +61,11 @@ source mace_env/bin/activate
 4. Install MACE and dependencies:
 ```bash
 pip install --upgrade pip
-pip install mace-torch
 pip install wandb
 
-# get the MACE repository for the running scripts
+# Install MACE from source
 git clone https://github.com/ACEsuit/mace.git
+pip install ./mace
 ```
 
 5. Set up Weights & Biases for tracking experiments:
