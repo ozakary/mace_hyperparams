@@ -46,14 +46,14 @@ python /scratch/plantto/<user_name>/packages/mace/scripts/run_train.py \
     --radial_type='bessel' \
     --num_radial_basis=8 \
     --num_cutoff_basis=8 \
-    --loss='universal' \
+    --loss='stress' \
     --batch_size=1 \
     --num_workers=1 \
     --valid_batch_size=1 \
     --max_num_epochs=20 \
     --ema \
     --ema_decay=0.99 \
-    --default_dtype='float32' \
+    --default_dtype='float64' \
     --device='cuda' \
     --seed=123456 \
     --restart_latest \
@@ -61,16 +61,15 @@ python /scratch/plantto/<user_name>/packages/mace/scripts/run_train.py \
     --checkpoints_dir='checkpoints' \
     --results_dir='results' \
     --log_dir='log' \
-    --lr=0.005 \
-    --swa \
-    --start_swa=400 \
-    --swa_energy_weight=1000 \
-    --energy_weight=1.0 \
-    --forces_weight=10 \
-    --stress_weight=100 \
+    --lr=0.00001 \
+    --forces_weight=1000 \
+    --stress_weight=10 \
     --compute_stress=True \
     --compute_forces=True \
     --compute_avg_num_neighbors=True \
+    --energy_key='energy' \
+    --forces_key='forces' \
+    --stress_key='stress' \
     --amsgrad \
     --scheduler='ReduceLROnPlateau' \
     --scheduler_patience=50 \
