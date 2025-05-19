@@ -165,12 +165,20 @@ These parameters control the optimization process.
 
 Create a separate job script for each hyperparameter combination you want to test. Use the template provided in this repository and modify the relevant parameters.
 
+There sould be two `.job` files per test, the first file concerns the training MACE and the second file is for testing the trained MACE model
+
 Example for testing different cutoff radii:
 ```bash
 # You copy the content of the 'mlip-mace_script_test-0.job' and then adjust the hyperparameters you want to optimize. The following is an example for the parameter 'r_max'
-vi script_mace_test-r_max-4.job
-vi script_mace_test-r_max-5.job
-vi script_mace_test-r_max-6.job
+# r_max = 4
+vi script_mace_training_test-r_max-4.job
+vi script_mace_testing_test-r_max-4.job
+# r_max = 5
+vi script_mace_training_test-r_max-5.job
+vi script_mace_testing_test-r_max-5.job
+# r_max = 6
+vi script_mace_training_test-r_max-6.job
+vi script_mace_testing_test-r_max-6.job
 ```
 
 ### Step 2: Initial Testing on gputest
@@ -178,19 +186,19 @@ vi script_mace_test-r_max-6.job
 Start with a small number of epochs (e.g., 20) and always start with a short run on the `gputest` partition to ensure your job works correctly:
 
 ```bash
-sbatch script_mace_test-r_max-4.job
+sbatch script_mace_training_test-r_max-4.job
 ```
 
 Review the output and error files to ensure everything is working properly.
 
 ### Step 3: Full Parameter Sweep
 
-Now, increase the number of epochs (e.g., 500 or 1000) and submit jobs to the `gpu` partition for full training runs:
+Now, for the training `.job` script, increase the number of epochs (e.g., 500 or 1000) and submit jobs to the `gpu` partition for full training runs:
 
 ```bash
 # Modify the job script to use the gpu partition and longer time limit
-sed -i 's/gputest/gpu/g' script_mace_test-r_max-4.job
-sed -i 's/0-00:15:00/0-36:00:00/g' script_mace_test-r_max-4.job
+sed -i 's/gputest/gpu/g' script_mace_training_test-r_max-4.job
+sed -i 's/0-00:15:00/0-36:00:00/g' script_mace_training_test-r_max-4.job
 
 # Submit the job
 sbatch script_mace_test-r_max-4.job
