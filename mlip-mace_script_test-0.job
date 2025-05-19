@@ -30,7 +30,7 @@ ulimit -s unlimited
 # Start of training the MACE architecture :
 
 python /scratch/plantto/<user_name>/packages/mace/scripts/run_train.py \
-    --train_file="./water_xe_dataset/mlip_data_xe-water_0-5ps_sampled-20.xyz" \
+    --train_file="./water_xe_dataset/water_xe_dataset_train_val.xyz" \
     --valid_fraction=0.05 \
     --test_file="./water_xe_dataset/water_xe_dataset_test.xyz" \
     --test_dir="./water_xe_dataset" \
