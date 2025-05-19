@@ -1,0 +1,49 @@
+#!/bin/bash
+
+#SBATCH --job-name=mlip_tests
+#SBATCH --partition=gputest
+#SBATCH --account=plantto # !!it is mandatory to specify the account (project) as precised in the CSC rules!!
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=0-00:15:00
+#SBATCH --gres=gpu:v100:1
+#SBATCH --output=mlp-r4-output_%j.txt
+#SBATCH --error=mlp-r4-errors_%j.txt
+
+#================================< Instructions-Section for Training MACE Potential >============================================
+#--------------------------------------------------------------------------------------------------------------------------------
+
+# Load necessary modules (!!checkh the availability of the following modules when using another machine!!)
+# If certian modules are not available on your machine, contact the corrsponding admin(s) to install them.
+module load pytorch/2.2 #necessary for 'mace_run_train'
+
+# using a virtual environment (!!when using v-env all the packages and dependencies should be installed in that mace-venv!!) 
+# python3 -m venv --system-site-packages mace-venv # should be used if there is no existent v-env
+source /scratch/plantto/<user_name>/packages/mace_env/bin/activate
+
+# Using the 'ulimit' command to control the user-level resource limits for processes. the option '-s unlimited' specifies that 
+# there should be no limit on the stack size for the processes launched by the job. The stack size is the amount of memory 
+# allocated for the call stack of a program.
+ulimit -s unlimited
+
+# Testing the trained MACE model
+
+cp checkpoints/*.model model
+
+# Evaluate the obtained MACE model on an XYZ file
+
+# Find the model file that matches the pattern
+model_file=$(ls ./model/*.model | head -n 1)
+
+# Check if any model files were found
+if [ -z "$model_file" ]; then
+  echo "No model files found in the directory ./model/"
+  exit 1
+fi
+
+python /scratch/plantto/<user_name>/packages/mace/scripts/eval_configs.py \
+    --configs="./water_xe_dataset/water_xe_dataset_test.xyz" \
+    --model="$model_file" \
+    --output="./test/water_xe_dataset_test_output.xyz" \
+
+exit 0
