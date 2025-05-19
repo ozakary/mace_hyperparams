@@ -11,12 +11,6 @@
 #SBATCH --output=mlp-r4-output_%j.txt
 #SBATCH --error=mlp-r4-errors_%j.txt
 
-#--------------------------------------------------------------------------------------------------------------------------------
-
-# Record start time
-start_time=$(date +"%Y-%m-%d %H:%M:%S")
-echo "Job started at $start_time"
-
 #================================< Instructions-Section for Training MACE Potential >============================================
 #--------------------------------------------------------------------------------------------------------------------------------
 
@@ -33,36 +27,15 @@ source /scratch/plantto/<user_name>/packages/mace_env/bin/activate
 # allocated for the call stack of a program.
 ulimit -s unlimited
 
-# On-line data loading for large datasets
-
-cd /scratch/plantto/<user_name>/mace_calcs/hyperparams_tests/cutoff_redius_tests/
-
-mkdir processed_data-r4
-
-python /scratch/plantto/<user_name>/packages/mace/scripts/preprocess_data.py \
-    --train_file="./mlip_data_xe-water/mlip_data_xe-water_train.xyz" \
-    --valid_file="./mlip_data_xe-water/mlip_data_xe-water_valid.xyz" \
-    --valid_fraction=1 \
-    --test_file="./mlip_data_xe-water/mlip_data_xe-water_test.xyz" \
-    --r_max=4.0 \
-    --h5_prefix="processed_data-r4/" \
-    --compute_statistics \
-    --E0s="average" \
-    --seed=123 \
-    --energy_key='energy' \
-    --forces_key='forces' \
-    --stress_key='stress' \
-
 # Start of training the MACE architecture :
 
 python /scratch/plantto/<user_name>/packages/mace/scripts/run_train.py \
-    --train_file="./processed_data-r4/train/train_0.h5" \
-    --valid_file="./processed_data-r4/val/val_0.h5" \
-    --test_file="./processed_data-r4/test/default_0.h5" \
-    --test_dir="./processed_data-r4" \
-    --statistics_file="./processed_data-r4/statistics.json" \
+    --train_file="./water_xe_dataset/mlip_data_xe-water_0-5ps_sampled-20.xyz" \
+    --valid_fraction=0.05 \
+    --test_file="./water_xe_dataset/water_xe_dataset_test.xyz" \
+    --test_dir="./water_xe_dataset" \
     --name='MACE_model' \
-    --model='ScaleShiftMACE' \
+    --model='MACE' \
     --num_interactions=1 \
     --num_channels=128 \
     --error_table='PerAtomRMSEstressvirials' \
@@ -73,69 +46,61 @@ python /scratch/plantto/<user_name>/packages/mace/scripts/run_train.py \
     --radial_type='bessel' \
     --num_radial_basis=8 \
     --num_cutoff_basis=8 \
-    --loss='weighted' \
+    --loss='universal' \
     --batch_size=1 \
+    --num_workers=1 \
     --valid_batch_size=1 \
-    --max_num_epochs=100 \
+    --max_num_epochs=20 \
     --ema \
     --ema_decay=0.99 \
-    --default_dtype='float64' \
+    --default_dtype='float32' \
     --device='cuda' \
     --seed=123456 \
     --restart_latest \
-    --model_dir='model-r4' \
-    --checkpoints_dir='checkpoints-r4' \
-    --results_dir='results-r4' \
-    --log_dir='log-r4' \
-    --lr=0.00001 \
-    --lr_factor=0.5 \
-    --forces_weight=1000 \
-    --stress_weight=10 \
+    --model_dir='model' \
+    --checkpoints_dir='checkpoints' \
+    --results_dir='results' \
+    --log_dir='log' \
+    --lr=0.005 \
+    --swa \
+    --start_swa=400 \
+    --swa_energy_weight=1000 \
+    --energy_weight=1.0 \
+    --forces_weight=10 \
+    --stress_weight=100 \
     --compute_stress=True \
     --compute_forces=True \
     --compute_avg_num_neighbors=True \
-    --energy_key='energy' \
-    --forces_key='forces' \
-    --stress_key='stress' \
-    --wandb\
-    --wandb_project='MACE_MLP' \
-    --wandb_entity='ouail-team' \
-    --wandb_name='run_r4' \
     --amsgrad \
+    --scheduler='ReduceLROnPlateau' \
+    --scheduler_patience=50 \
+    --lr_scheduler_gamma=0.99 \
     --MLP_irreps='8x0e' \
     --radial_MLP='[32, 64, 128]' \
     --hidden_irreps='128x0e + 128x1o' \
     --num_channels=128 \
-    --valid_fraction=1 \
-#    --swa \
-#    --start_swa=60 \
+    --wandb \
+    --wandb_project='MACE_MLIP' \
+    --wandb_entity='<your-team-name>' \
+    --wandb_name='run_test_0' \
 
-cp checkpoints-r4/*.model model-r4
+
+cp checkpoints/*.model model
 
 # Evaluate the obtained MACE model on an XYZ file
 
 # Find the model file that matches the pattern
-model_file=$(ls ./model-r4/*.model | head -n 1)
+model_file=$(ls ./model/*.model | head -n 1)
 
 # Check if any model files were found
 if [ -z "$model_file" ]; then
-  echo "No model files found in the directory ./model-r4/"
+  echo "No model files found in the directory ./model/"
   exit 1
 fi
 
 python /scratch/plantto/<user_name>/packages/mace/scripts/eval_configs.py \
-    --configs="./mlip_data_xe-water/mlip_data_xe-water_test.xyz" \
+    --configs="./water_xe_dataset/water_xe_dataset_test.xyz" \
     --model="$model_file" \
-    --output="./test-r4/mlip_data_xe-water_test_output.xyz" \
-
-# Record end time
-end_time=$(date +"%Y-%m-%d %H:%M:%S")
-echo "Job finished at $end_time"
-
-# Calculate and print execution time
-start_seconds=$(date -d "$start_time" +"%s")
-end_seconds=$(date -d "$end_time" +"%s")
-execution_time=$((end_seconds - start_seconds))
-echo "Job took $execution_time seconds to complete."
+    --output="./test/water_xe_dataset_test_output.xyz" \
 
 exit 0
