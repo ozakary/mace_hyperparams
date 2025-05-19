@@ -97,8 +97,8 @@ cd mace_calcs/hyperparams_tests/cutoff_redius_tests/
 mkdir water_xe_dataset
 cd water_xe_dataset
 
-# Go to your local machine terminal, locate the `mlip_data_xe-water_0-5ps_sampled-20.xyz` file, and then upload it to Puhti using:
-scp mlip_data_xe-water_0-5ps_sampled-20.xyz <user_nqme>@puhti.csc.fi:/scratch/plantto/<user_name>/mace_calcs/hyperparams_tests/cutoff_redius_tests/water_xe_dataset/
+# Go to your local machine terminal, locate the `mlip_data_xe-water_0-5ps_sampled-20.xyz` and `code_split.py` files, and then upload it to Puhti using:
+scp mlip_data_xe-water_0-5ps_sampled-20.xyz code_split.py <user_nqme>@puhti.csc.fi:/scratch/plantto/<user_name>/mace_calcs/hyperparams_tests/cutoff_redius_tests/water_xe_dataset/
 ```
 
 2. Now back to the supercomputer terminal, split the dataset into training, validation, and testing sets:
@@ -108,13 +108,12 @@ cd ..
 ```
 
 3. The splitting script should create:
-   - `water_xe_dataset_train.xyz` (typically 80% of data)
-   - `water_xe_dataset_valid.xyz` (typically 10% of data)
+   - `water_xe_dataset_train_val.xyz` (typically 90% of data)
    - `water_xe_dataset_test.xyz` (typically 10% of data)
 
 ## Hyperparameter Testing Strategy
 
-Our hyperparameter optimization strategy follows a systematic approach, testing parameters in order of their expected impact on model performance.
+Our hyperparameter optimization strategy follows the approach:
 
 ### Phase 1: Architecture Parameters
 
@@ -168,6 +167,7 @@ Create a separate job script for each hyperparameter combination you want to tes
 
 Example for testing different cutoff radii:
 ```bash
+# You copy the content of the 'mlip-mace_script_test-0.job' and then adjust the hyperparameters you want to optimize. The following is an example for the parameter 'r_max'
 vi script_mace_test-r_max-4.job
 vi script_mace_test-r_max-5.job
 vi script_mace_test-r_max-6.job
@@ -175,7 +175,7 @@ vi script_mace_test-r_max-6.job
 
 ### Step 2: Initial Testing on gputest
 
-Always start with a short run on the `gputest` partition to ensure your job works correctly:
+Start with a small number of epochs (e.g., 20) and always start with a short run on the `gputest` partition to ensure your job works correctly:
 
 ```bash
 sbatch script_mace_test-r_max-4.job
@@ -185,7 +185,7 @@ Review the output and error files to ensure everything is working properly.
 
 ### Step 3: Full Parameter Sweep
 
-Submit jobs to the `gpu` partition for full training runs:
+Now, increase the number of epochs (e.g., 500 or 1000) and submit jobs to the `gpu` partition for full training runs:
 
 ```bash
 # Modify the job script to use the gpu partition and longer time limit
