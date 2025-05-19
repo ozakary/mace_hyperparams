@@ -82,23 +82,4 @@ python /scratch/plantto/<user_name>/packages/mace/scripts/run_train.py \
     --wandb_entity='<your-team-name>' \
     --wandb_name='run_test_0' \
 
-
-cp checkpoints/*.model model
-
-# Evaluate the obtained MACE model on an XYZ file
-
-# Find the model file that matches the pattern
-model_file=$(ls ./model/*.model | head -n 1)
-
-# Check if any model files were found
-if [ -z "$model_file" ]; then
-  echo "No model files found in the directory ./model/"
-  exit 1
-fi
-
-python /scratch/plantto/<user_name>/packages/mace/scripts/eval_configs.py \
-    --configs="./water_xe_dataset/water_xe_dataset_test.xyz" \
-    --model="$model_file" \
-    --output="./test/water_xe_dataset_test_output.xyz" \
-
 exit 0
