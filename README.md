@@ -280,6 +280,378 @@ plt.savefig('energy_prediction.png', dpi=300)
 
 3. Drautz, R. (2019). Atomic cluster expansion for accurate and transferable interatomic potentials. *Physical Review B*, 99, 014104. [https://doi.org/10.1103/PhysRevB.99.014104](https://doi.org/10.1103/PhysRevB.99.014104)
 
+## Appendix (MACE different commands and options)
+
+```bash
+usage: run_train.py [-h] [--config CONFIG] --name NAME [--seed SEED]
+                    [--work_dir WORK_DIR] [--log_dir LOG_DIR]
+                    [--model_dir MODEL_DIR]
+                    [--checkpoints_dir CHECKPOINTS_DIR]
+                    [--results_dir RESULTS_DIR]
+                    [--downloads_dir DOWNLOADS_DIR]
+                    [--device {cpu,cuda,mps,xpu}]
+                    [--default_dtype {float32,float64}] [--distributed]
+                    [--log_level LOG_LEVEL] [--plot PLOT]
+                    [--plot_frequency PLOT_FREQUENCY]
+                    [--error_table {PerAtomRMSE,TotalRMSE,PerAtomRMSEstressvirials,PerAtomMAEstressvirials,PerAtomMAE,TotalMAE,DipoleRMSE,DipoleMAE,EnergyDipoleRMSE}]
+                    [--model {BOTNet,MACE,ScaleShiftMACE,ScaleShiftBOTNet,AtomicDipolesMACE,EnergyDipolesMACE}]
+                    [--r_max R_MAX]
+                    [--radial_type {bessel,gaussian,chebyshev}]
+                    [--num_radial_basis NUM_RADIAL_BASIS]
+                    [--num_cutoff_basis NUM_CUTOFF_BASIS] [--pair_repulsion]
+                    [--distance_transform {None,Agnesi,Soft}]
+                    [--interaction {RealAgnosticResidualInteractionBlock,RealAgnosticAttResidualInteractionBlock,RealAgnosticInteractionBlock,RealAgnosticDensityInteractionBlock,RealAgnosticDensityResidualInteractionBlock}]
+                    [--interaction_first {RealAgnosticResidualInteractionBlock,RealAgnosticInteractionBlock,RealAgnosticDensityInteractionBlock,RealAgnosticDensityResidualInteractionBlock}]
+                    [--max_ell MAX_ELL] [--correlation CORRELATION]
+                    [--num_interactions NUM_INTERACTIONS]
+                    [--MLP_irreps MLP_IRREPS] [--radial_MLP RADIAL_MLP]
+                    [--hidden_irreps HIDDEN_IRREPS]
+                    [--num_channels NUM_CHANNELS] [--max_L MAX_L]
+                    [--gate {silu,tanh,abs,None}]
+                    [--scaling {std_scaling,rms_forces_scaling,no_scaling}]
+                    [--avg_num_neighbors AVG_NUM_NEIGHBORS]
+                    [--compute_avg_num_neighbors COMPUTE_AVG_NUM_NEIGHBORS]
+                    [--compute_stress COMPUTE_STRESS]
+                    [--compute_forces COMPUTE_FORCES]
+                    [--train_file TRAIN_FILE] [--valid_file VALID_FILE]
+                    [--valid_fraction VALID_FRACTION] [--test_file TEST_FILE]
+                    [--test_dir TEST_DIR]
+                    [--multi_processed_test MULTI_PROCESSED_TEST]
+                    [--num_workers NUM_WORKERS] [--pin_memory PIN_MEMORY]
+                    [--atomic_numbers ATOMIC_NUMBERS] [--mean MEAN]
+                    [--std STD] [--statistics_file STATISTICS_FILE]
+                    [--E0s E0S]
+                    [--foundation_filter_elements FOUNDATION_FILTER_ELEMENTS]
+                    [--heads HEADS]
+                    [--multiheads_finetuning MULTIHEADS_FINETUNING]
+                    [--foundation_head FOUNDATION_HEAD]
+                    [--weight_pt_head WEIGHT_PT_HEAD]
+                    [--num_samples_pt NUM_SAMPLES_PT]
+                    [--force_mh_ft_lr FORCE_MH_FT_LR]
+                    [--subselect_pt {fps,random}]
+                    [--filter_type_pt {none,combinations,inclusive,exclusive}]
+                    [--pt_train_file PT_TRAIN_FILE]
+                    [--pt_valid_file PT_VALID_FILE]
+                    [--foundation_model_elements FOUNDATION_MODEL_ELEMENTS]
+                    [--keep_isolated_atoms KEEP_ISOLATED_ATOMS]
+                    [--energy_key ENERGY_KEY] [--forces_key FORCES_KEY]
+                    [--virials_key VIRIALS_KEY] [--stress_key STRESS_KEY]
+                    [--dipole_key DIPOLE_KEY] [--head_key HEAD_KEY]
+                    [--charges_key CHARGES_KEY]
+                    [--skip_evaluate_heads SKIP_EVALUATE_HEADS]
+                    [--loss {ef,weighted,forces_only,virials,stress,dipole,huber,universal,energy_forces_dipole,l1l2energyforces}]
+                    [--forces_weight FORCES_WEIGHT]
+                    [--swa_forces_weight SWA_FORCES_WEIGHT]
+                    [--energy_weight ENERGY_WEIGHT]
+                    [--swa_energy_weight SWA_ENERGY_WEIGHT]
+                    [--virials_weight VIRIALS_WEIGHT]
+                    [--swa_virials_weight SWA_VIRIALS_WEIGHT]
+                    [--stress_weight STRESS_WEIGHT]
+                    [--swa_stress_weight SWA_STRESS_WEIGHT]
+                    [--dipole_weight DIPOLE_WEIGHT]
+                    [--swa_dipole_weight SWA_DIPOLE_WEIGHT]
+                    [--config_type_weights CONFIG_TYPE_WEIGHTS]
+                    [--huber_delta HUBER_DELTA]
+                    [--optimizer {adam,adamw,schedulefree}] [--beta BETA]
+                    [--batch_size BATCH_SIZE]
+                    [--valid_batch_size VALID_BATCH_SIZE] [--lr LR]
+                    [--swa_lr SWA_LR] [--weight_decay WEIGHT_DECAY]
+                    [--amsgrad] [--scheduler SCHEDULER]
+                    [--lr_factor LR_FACTOR]
+                    [--scheduler_patience SCHEDULER_PATIENCE]
+                    [--lr_scheduler_gamma LR_SCHEDULER_GAMMA] [--swa]
+                    [--start_swa START_SWA] [--lbfgs] [--ema]
+                    [--ema_decay EMA_DECAY] [--max_num_epochs MAX_NUM_EPOCHS]
+                    [--patience PATIENCE]
+                    [--foundation_model FOUNDATION_MODEL]
+                    [--foundation_model_readout]
+                    [--eval_interval EVAL_INTERVAL] [--keep_checkpoints]
+                    [--save_all_checkpoints] [--restart_latest] [--save_cpu]
+                    [--clip_grad CLIP_GRAD] [--dry_run]
+                    [--enable_cueq ENABLE_CUEQ] [--wandb]
+                    [--wandb_dir WANDB_DIR] [--wandb_project WANDB_PROJECT]
+                    [--wandb_entity WANDB_ENTITY] [--wandb_name WANDB_NAME]
+                    [--wandb_log_hypers WANDB_LOG_HYPERS]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --config CONFIG       config file to aggregate options (default: None)
+  --name NAME           experiment name (default: None)
+  --seed SEED           random seed (default: 123)
+  --work_dir WORK_DIR   set directory for all files and folders (default: .)
+  --log_dir LOG_DIR     directory for log files (default: None)
+  --model_dir MODEL_DIR
+                        directory for final model (default: None)
+  --checkpoints_dir CHECKPOINTS_DIR
+                        directory for checkpoint files (default: None)
+  --results_dir RESULTS_DIR
+                        directory for results (default: None)
+  --downloads_dir DOWNLOADS_DIR
+                        directory for downloads (default: None)
+  --device {cpu,cuda,mps,xpu}
+                        select device (default: cpu)
+  --default_dtype {float32,float64}
+                        set default dtype (default: float64)
+  --distributed         train in multi-GPU data parallel mode (default: False)
+  --log_level LOG_LEVEL
+                        log level (default: INFO)
+  --plot PLOT           Plot results of training (default: True)
+  --plot_frequency PLOT_FREQUENCY
+                        Set plotting frequency: '0' for only at the end or an
+                        integer N to plot every N epochs. (default: 0)
+  --error_table {PerAtomRMSE,TotalRMSE,PerAtomRMSEstressvirials,PerAtomMAEstressvirials,PerAtomMAE,TotalMAE,DipoleRMSE,DipoleMAE,EnergyDipoleRMSE}
+                        Type of error table produced at the end of the
+                        training (default: PerAtomRMSE)
+  --model {BOTNet,MACE,ScaleShiftMACE,ScaleShiftBOTNet,AtomicDipolesMACE,EnergyDipolesMACE}
+                        model type (default: MACE)
+  --r_max R_MAX         distance cutoff (in Ang) (default: 5.0)
+  --radial_type {bessel,gaussian,chebyshev}
+                        type of radial basis functions (default: bessel)
+  --num_radial_basis NUM_RADIAL_BASIS
+                        number of radial basis functions (default: 8)
+  --num_cutoff_basis NUM_CUTOFF_BASIS
+                        number of basis functions for smooth cutoff (default:
+                        5)
+  --pair_repulsion      use pair repulsion term with ZBL potential (default:
+                        False)
+  --distance_transform {None,Agnesi,Soft}
+                        use distance transform for radial basis functions
+                        (default: None)
+  --interaction {RealAgnosticResidualInteractionBlock,RealAgnosticAttResidualInteractionBlock,RealAgnosticInteractionBlock,RealAgnosticDensityInteractionBlock,RealAgnosticDensityResidualInteractionBlock}
+                        name of interaction block (default:
+                        RealAgnosticResidualInteractionBlock)
+  --interaction_first {RealAgnosticResidualInteractionBlock,RealAgnosticInteractionBlock,RealAgnosticDensityInteractionBlock,RealAgnosticDensityResidualInteractionBlock}
+                        name of interaction block (default:
+                        RealAgnosticResidualInteractionBlock)
+  --max_ell MAX_ELL     highest \ell of spherical harmonics (default: 3)
+  --correlation CORRELATION
+                        correlation order at each layer (default: 3)
+  --num_interactions NUM_INTERACTIONS
+                        number of interactions (default: 2)
+  --MLP_irreps MLP_IRREPS
+                        hidden irreps of the MLP in last readout (default:
+                        16x0e)
+  --radial_MLP RADIAL_MLP
+                        width of the radial MLP (default: [64, 64, 64])
+  --hidden_irreps HIDDEN_IRREPS
+                        irreps for hidden node states (default: None)
+  --num_channels NUM_CHANNELS
+                        number of embedding channels (default: None)
+  --max_L MAX_L         max L equivariance of the message (default: None)
+  --gate {silu,tanh,abs,None}
+                        non linearity for last readout (default: silu)
+  --scaling {std_scaling,rms_forces_scaling,no_scaling}
+                        type of scaling to the output (default:
+                        rms_forces_scaling)
+  --avg_num_neighbors AVG_NUM_NEIGHBORS
+                        normalization factor for the message (default: 1)
+  --compute_avg_num_neighbors COMPUTE_AVG_NUM_NEIGHBORS
+                        normalization factor for the message (default: True)
+  --compute_stress COMPUTE_STRESS
+                        Select True to compute stress (default: False)
+  --compute_forces COMPUTE_FORCES
+                        Select True to compute forces (default: True)
+  --train_file TRAIN_FILE
+                        Training set file, format is .xyz or .h5 (default:
+                        None)
+  --valid_file VALID_FILE
+                        Validation set .xyz or .h5 file (default: None)
+  --valid_fraction VALID_FRACTION
+                        Fraction of training set used for validation (default:
+                        0.1)
+  --test_file TEST_FILE
+                        Test set .xyz pt .h5 file (default: None)
+  --test_dir TEST_DIR   Path to directory with test files named as test_*.h5
+                        (default: None)
+  --multi_processed_test MULTI_PROCESSED_TEST
+                        Boolean value for whether the test data was
+                        multiprocessed (default: False)
+  --num_workers NUM_WORKERS
+                        Number of workers for data loading (default: 0)
+  --pin_memory PIN_MEMORY
+                        Pin memory for data loading (default: True)
+  --atomic_numbers ATOMIC_NUMBERS
+                        List of atomic numbers (default: None)
+  --mean MEAN           Mean energy per atom of training set (default: None)
+  --std STD             Standard deviation of force components in the training
+                        set (default: None)
+  --statistics_file STATISTICS_FILE
+                        json file containing statistics of training set
+                        (default: None)
+  --E0s E0S             Dictionary of isolated atom energies (default: None)
+  --foundation_filter_elements FOUNDATION_FILTER_ELEMENTS
+                        Filter element during fine-tuning (default: True)
+  --heads HEADS         Dict of heads: containing individual files and E0s
+                        (default: None)
+  --multiheads_finetuning MULTIHEADS_FINETUNING
+                        Boolean value for whether the model is multiheaded
+                        (default: True)
+  --foundation_head FOUNDATION_HEAD
+                        Name of the head to use for fine-tuning (default:
+                        None)
+  --weight_pt_head WEIGHT_PT_HEAD
+                        Weight of the pretrained head in the loss function
+                        (default: 1.0)
+  --num_samples_pt NUM_SAMPLES_PT
+                        Number of samples in the pretrained head (default:
+                        10000)
+  --force_mh_ft_lr FORCE_MH_FT_LR
+                        Force the multiheaded fine-tuning to use arg_parser lr
+                        (default: False)
+  --subselect_pt {fps,random}
+                        Method to subselect the configurations of the
+                        pretraining set (default: random)
+  --filter_type_pt {none,combinations,inclusive,exclusive}
+                        Filtering method for collecting the pretraining set
+                        (default: none)
+  --pt_train_file PT_TRAIN_FILE
+                        Training set file for the pretrained head (default:
+                        None)
+  --pt_valid_file PT_VALID_FILE
+                        Validation set file for the pretrained head (default:
+                        None)
+  --foundation_model_elements FOUNDATION_MODEL_ELEMENTS
+                        Keep all elements of the foundation model during fine-
+                        tuning (default: False)
+  --keep_isolated_atoms KEEP_ISOLATED_ATOMS
+                        Keep isolated atoms in the dataset, useful for
+                        transfer learning (default: False)
+  --energy_key ENERGY_KEY
+                        Key of reference energies in training xyz (default:
+                        REF_energy)
+  --forces_key FORCES_KEY
+                        Key of reference forces in training xyz (default:
+                        REF_forces)
+  --virials_key VIRIALS_KEY
+                        Key of reference virials in training xyz (default:
+                        REF_virials)
+  --stress_key STRESS_KEY
+                        Key of reference stress in training xyz (default:
+                        REF_stress)
+  --dipole_key DIPOLE_KEY
+                        Key of reference dipoles in training xyz (default:
+                        dipole)
+  --head_key HEAD_KEY   Key of head in training xyz (default: head)
+  --charges_key CHARGES_KEY
+                        Key of atomic charges in training xyz (default:
+                        REF_charges)
+  --skip_evaluate_heads SKIP_EVALUATE_HEADS
+                        Comma-separated list of heads to skip during final
+                        evaluation (default: pt_head)
+  --loss {ef,weighted,forces_only,virials,stress,dipole,huber,universal,energy_forces_dipole,l1l2energyforces}
+                        type of loss (default: weighted)
+  --forces_weight FORCES_WEIGHT
+                        weight of forces loss (default: 100.0)
+  --swa_forces_weight SWA_FORCES_WEIGHT, --stage_two_forces_weight SWA_FORCES_WEIGHT
+                        weight of forces loss after starting Stage Two
+                        (previously called swa) (default: 100.0)
+  --energy_weight ENERGY_WEIGHT
+                        weight of energy loss (default: 1.0)
+  --swa_energy_weight SWA_ENERGY_WEIGHT, --stage_two_energy_weight SWA_ENERGY_WEIGHT
+                        weight of energy loss after starting Stage Two
+                        (previously called swa) (default: 1000.0)
+  --virials_weight VIRIALS_WEIGHT
+                        weight of virials loss (default: 1.0)
+  --swa_virials_weight SWA_VIRIALS_WEIGHT, --stage_two_virials_weight SWA_VIRIALS_WEIGHT
+                        weight of virials loss after starting Stage Two
+                        (previously called swa) (default: 10.0)
+  --stress_weight STRESS_WEIGHT
+                        weight of stress loss (default: 1.0)
+  --swa_stress_weight SWA_STRESS_WEIGHT, --stage_two_stress_weight SWA_STRESS_WEIGHT
+                        weight of stress loss after starting Stage Two
+                        (previously called swa) (default: 10.0)
+  --dipole_weight DIPOLE_WEIGHT
+                        weight of dipoles loss (default: 1.0)
+  --swa_dipole_weight SWA_DIPOLE_WEIGHT, --stage_two_dipole_weight SWA_DIPOLE_WEIGHT
+                        weight of dipoles after starting Stage Two (previously
+                        called swa) (default: 1.0)
+  --config_type_weights CONFIG_TYPE_WEIGHTS
+                        String of dictionary containing the weights for each
+                        config type (default: {"Default":1.0})
+  --huber_delta HUBER_DELTA
+                        delta parameter for huber loss (default: 0.01)
+  --optimizer {adam,adamw,schedulefree}
+                        Optimizer for parameter optimization (default: adam)
+  --beta BETA           Beta parameter for the optimizer (default: 0.9)
+  --batch_size BATCH_SIZE
+                        batch size (default: 10)
+  --valid_batch_size VALID_BATCH_SIZE
+                        Validation batch size (default: 10)
+  --lr LR               Learning rate of optimizer (default: 0.01)
+  --swa_lr SWA_LR, --stage_two_lr SWA_LR
+                        Learning rate of optimizer in Stage Two (previously
+                        called swa) (default: 0.001)
+  --weight_decay WEIGHT_DECAY
+                        weight decay (L2 penalty) (default: 5e-07)
+  --amsgrad             use amsgrad variant of optimizer (default: True)
+  --scheduler SCHEDULER
+                        Type of scheduler (default: ReduceLROnPlateau)
+  --lr_factor LR_FACTOR
+                        Learning rate factor (default: 0.8)
+  --scheduler_patience SCHEDULER_PATIENCE
+                        Learning rate factor (default: 50)
+  --lr_scheduler_gamma LR_SCHEDULER_GAMMA
+                        Gamma of learning rate scheduler (default: 0.9993)
+  --swa, --stage_two    use Stage Two loss weight, which decreases the
+                        learning rate and increases the energy weight at the
+                        end of the training to help converge them (default:
+                        False)
+  --start_swa START_SWA, --start_stage_two START_SWA
+                        Number of epochs before changing to Stage Two loss
+                        weights (default: None)
+  --lbfgs               Switch to L-BFGS optimizer (default: False)
+  --ema                 use Exponential Moving Average (default: False)
+  --ema_decay EMA_DECAY
+                        Exponential Moving Average decay (default: 0.99)
+  --max_num_epochs MAX_NUM_EPOCHS
+                        Maximum number of epochs (default: 2048)
+  --patience PATIENCE   Maximum number of consecutive epochs of increasing
+                        loss (default: 2048)
+  --foundation_model FOUNDATION_MODEL
+                        Path to the foundation model for transfer learning
+                        (default: None)
+  --foundation_model_readout
+                        Use readout of foundation model for transfer learning
+                        (default: True)
+  --eval_interval EVAL_INTERVAL
+                        evaluate model every <n> epochs (default: 1)
+  --keep_checkpoints    keep all checkpoints (default: False)
+  --save_all_checkpoints
+                        save all checkpoints (default: False)
+  --restart_latest      restart optimizer from latest checkpoint (default:
+                        False)
+  --save_cpu            Save a model to be loaded on cpu (default: False)
+  --clip_grad CLIP_GRAD
+                        Gradient Clipping Value (default: 10.0)
+  --dry_run             Run all steps upto training to test settings.
+                        (default: False)
+  --enable_cueq ENABLE_CUEQ
+                        Enable cuequivariance acceleration (default: False)
+  --wandb               Use Weights and Biases for experiment tracking
+                        (default: False)
+  --wandb_dir WANDB_DIR
+                        An absolute path to a directory where Weights and
+                        Biases metadata will be stored (default: None)
+  --wandb_project WANDB_PROJECT
+                        Weights and Biases project name (default: )
+  --wandb_entity WANDB_ENTITY
+                        Weights and Biases entity name (default: )
+  --wandb_name WANDB_NAME
+                        Weights and Biases experiment name (default: )
+  --wandb_log_hypers WANDB_LOG_HYPERS
+                        The hyperparameters to log in Weights and Biases
+                        (default: ['num_channels', 'max_L', 'correlation',
+                        'lr', 'swa_lr', 'weight_decay', 'batch_size',
+                        'max_num_epochs', 'start_swa', 'energy_weight',
+                        'forces_weight'])
+
+Args that start with '--' can also be set in a config file (specified via
+--config). The config file uses YAML syntax and must represent a YAML
+'mapping' (for details, see http://learn.getgrav.org/advanced/yaml). In
+general, command-line values override config file values which override
+defaults.
+```
+
 ---
 
 For further details, please refer to the respective folders or contact the author via the provided email.
