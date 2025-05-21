@@ -34,7 +34,7 @@ python /scratch/plantto/<user_name>/packages/mace/scripts/run_train.py \
     --test_file="./water_xe_dataset/water_xe_dataset_test.xyz" \
     --test_dir="./water_xe_dataset" \
     --name='MACE_model' \
-    --model='MACE' \
+    --model='ScaleShiftMACE' \
     --num_interactions=1 \
     --num_channels=128 \
     --error_table='PerAtomRMSEstressvirials' \
