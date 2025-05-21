@@ -61,7 +61,8 @@ python /scratch/plantto/<user_name>/packages/mace/scripts/run_train.py \
     --results_dir='results' \
     --log_dir='log' \
     --lr=0.00001 \
-    --forces_weight=1000 \
+    --energy_weight=1 \
+    --forces_weight=1 \
     --stress_weight=10 \
     --compute_stress=True \
     --compute_forces=True \
