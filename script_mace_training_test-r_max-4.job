@@ -45,7 +45,7 @@ python /scratch/plantto/<user_name>/packages/mace/scripts/run_train.py \
     --radial_type='bessel' \
     --num_radial_basis=8 \
     --num_cutoff_basis=8 \
-    --loss='stress' \
+    --loss='universal' \
     --batch_size=1 \
     --num_workers=1 \
     --valid_batch_size=1 \
