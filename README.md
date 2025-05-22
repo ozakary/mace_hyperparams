@@ -155,9 +155,10 @@ These parameters control the optimization process.
 |-----------|-------------|----------------|---------|
 | `lr` | Learning rate | 1e-4, 1e-5, 1e-6 | 1e-5 |
 | `batch_size` | Batch size for training | 1, 2, 4, 8 | 1 |
-| `forces_weight` | Weight of forces in the loss function | 100, 500, 1000, 2000 | 1000 |
-| `stress_weight` | Weight of stress in the loss function | 1, 10, 100 | 10 |
-| `max_num_epochs` | Maximum number of training epochs | 100, 200, 500 | 100 |
+| `energy_weight` | Weight of energy in the loss function | N/A | 1 |
+| `forces_weight` | Weight of forces in the loss function | N/A | 1 |
+| `stress_weight` | Weight of stress in the loss function | N/A | 10 |
+| `max_num_epochs` | Maximum number of training epochs | 100, 500, 1000 | 500 |
 
 ## Testing Workflow
 
