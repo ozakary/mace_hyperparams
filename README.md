@@ -132,7 +132,7 @@ These parameters define how atoms interact within the cutoff radius.
 
 | Parameter | Description | Values to Test | Default |
 |-----------|-------------|----------------|---------|
-| `r_max` | Cutoff radius in Ångstroms | 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 | 5.0 |
+| `r_max` | Cutoff radius in Ångstroms | 4, 5, 6, 7, 8, 9, 10 | 5 |
 | `num_radial_basis` | Number of radial basis functions | 8, 12, 16 | 8 |
 | `num_cutoff_basis` | Number of cutoff basis functions | 8, 12, 16 | 8 |
 | `radial_type` | Type of radial basis | 'bessel', 'gaussian' | 'bessel' |
